@@ -1,45 +1,43 @@
-#include <stdio.h>
-#include <stdlib.h>
-#include "conversion.h"
-
-void clearScreen() {
-    #ifdef _WIN32
-        system("cls");
-    #else
-        system("clear");
-    #endif
-}
-
-void showHeader() {
-    printf("=============================================\n");
-    printf("     KONVERSI DESIMAL KE BINER (STACK)     \n");
-    printf("=============================================\n");
-}
+#include "queue.h"
 
 int main() {
-    int decimal;
-    char lanjut;
+    TellerQueue tellers[MAX_TELLERS];
+    initTellerQueues(tellers, MAX_TELLERS);
     
+    int choice;
     do {
-        clearScreen();
-        showHeader();
+        printf("\nSistem Antrian Bank\n");
+        printf("1. Ambil Nomor Antrian\n");
+        printf("2. Proses Nasabah\n");
+        printf("3. Tampilkan Semua Antrian\n");
+        printf("4. Keluar\n");
+        printf("Masukkan pilihan Anda: ");
+        scanf("%d", &choice);
         
-        printf("\nMasukkan bilangan desimal: ");
-        if (scanf("%d", &decimal) != 1) {
-            printf("Error: Input harus berupa bilangan!\n");
-            while (getchar() != '\n'); // Clear input buffer
-        } else if (decimal < 0) {
-            printf("Error: Bilangan harus non-negatif!\n");
-        } else {
-            decimalToBinary(decimal);
+        switch (choice) {
+            case 1:
+                addCustomer(tellers, MAX_TELLERS);
+                printQueues(tellers, MAX_TELLERS);
+                break;
+            case 2:
+                processCustomer(tellers, MAX_TELLERS);
+                printQueues(tellers, MAX_TELLERS);
+                break;
+            case 3:
+                printQueues(tellers, MAX_TELLERS);
+                break;
+            case 4:
+                printf("Terima kasih telah menggunakan layanan kami!\n");
+                break;
+            default:
+                printf("Pilihan tidak valid! Silakan coba lagi.\n");
         }
-        
-        printf("\nIngin mengkonversi bilangan lain? (y/n): ");
-        while (getchar() != '\n'); // Clear input buffer
-        scanf("%c", &lanjut);
-        
-    } while (lanjut == 'y' || lanjut == 'Y');
+    } while (choice != 4);
     
-    printf("\nTerima kasih telah menggunakan program ini!\n");
+    // Membersihkan semua antrian
+    for (int i = 0; i < MAX_TELLERS; i++) {
+        deleteAll(&tellers[i].queue);
+    }
+    
     return 0;
 } 
